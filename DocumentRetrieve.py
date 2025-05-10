@@ -2,12 +2,11 @@ from langchain_community.document_loaders import PyPDFLoader
 # from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import chromadb 
-from chromadb.utils.embedding_functions import OllamaEmbeddingFunction
-
-from langchain_community.embeddings import OllamaEmbeddings
+# from chromadb.utils.embedding_functions import OllamaEmbeddingFunction
+# from langchain_community.embeddings import OllamaEmbeddings
 
 import jsonpickle
-import ollama
+import ollama #not to be confused with langchains implementation of ollama they are very different,
 import time
 import os
 import json
@@ -157,10 +156,10 @@ def get_file_contents(file):
         return f.read()
 
 def ChromaDBConfig(embedding_model_name):
-    persist_directory = './db'
+    persist_directory = './db' #needs to come from a settings file
     vectorDBClient = chromadb.PersistentClient(path=persist_directory)
     print('HEARTBEAT:', vectorDBClient.heartbeat())
-    collection = vectorDBClient.get_or_create_collection("docs")
+    collection = vectorDBClient.get_or_create_collection("docs") #TODO make a variable from settings
     print("There are", collection.count(), "in the collection")
     return collection   
 
@@ -187,13 +186,18 @@ def QueryLLM(vector_collection, model_name, embedding_model_name):
         
         prompt_chunk_embedding = ollama.embeddings(model=embedding_model_name, prompt=user_prompt)["embedding"]
         # prompt_embedding = ollama.embeddings(model=model_name, prompt=user_prompt)["embedding"]
-
+        print (f"Embedded prompt: {prompt_chunk_embedding}")
         results = vector_collection.query( 
             query_embeddings=[prompt_chunk_embedding],
-            n_results=10,
-            include=["documents", "metadatas"]
+            n_results=10
+            #,include=["documents", "metadatas", 'distances']
             #,where_document={"$contains":user_prompt}  # optional filter
         )
+
+        print(results)
+        #langchain implementation not avail on original chromadb
+        # results2 = vector_collection.similarity_search(query_embeddings=[prompt_chunk_embedding], n_results=10, include=["documents", "metadatas"])
+        # print(results2)
 
         data = results['documents'][0][:10] #only get first page
         # data = results['documents']
@@ -261,10 +265,8 @@ folder_paths = set()
 #folder_paths.add('E:/Blog/RandomThoughts')
 folder_paths.add('E:\Blog\RandomThoughts\Articles')
 
-
-
-
-QueryLLM(vectorDbCollection, query_Model, embedding_model_name)
+#TODO add flag to run query vs process
+# QueryLLM(vectorDbCollection, query_Model, embedding_model_name)
 
 allFiles = list_files(folder_paths)
 #TODO need to add a filter date and only acquire files modified from that date
@@ -278,7 +280,7 @@ pptxFiles = FilterFiles(allFiles, ['.ppt', '.pptx'])
 txtFiles = FilterFiles(allFiles, ['.txt', '.md', '.json', '.html'])
 
 
-# Process_Text_Documents(txtFiles, vectorDbCollection, embedding_model_name)
+Process_Text_Documents(txtFiles, vectorDbCollection, embedding_model_name)
 print('-------------------------------------------')
 # ProcessDocument(docxFiles)
 # print('-------------------------------------------')
