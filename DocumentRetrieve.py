@@ -129,8 +129,13 @@ def get_embeddings_for_TextFiles(filename, modelname):
     else:
         document_data = get_file_contents(filename)
         print('splitting document:', filename)
+<<<<<<< HEAD
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=vectorDB_ChunkSize, 
             chunk_overlap=vectorDB_ChunkOverlap, 
+=======
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunkSize, 
+            chunk_overlap=chunkOverlap, 
+>>>>>>> 413a0ab (updated)
             length_function=len,  
             separators=["\n\n", "\n", " ", ".", ",", "",
                         "\u200b",  # Zero-width space
@@ -174,7 +179,16 @@ def find_most_similar(needle, haystack):
     ]
     return sorted(zip(similarity_scores, range(len(haystack))), reverse=True)
 
+<<<<<<< HEAD
 def QueryLLM(vector_collection, model_name, embedding_model_name, user_prompt):
+=======
+def QueryLLM(vector_collection, model_name, embedding_model_name):
+    # vector_collection, userPrompt
+        # prompt_embedding = ollama.embeddings(model=model_name, prompt=user_prompt)["embedding"]
+    # gotta figure out how to get the embeddings from the vector collection - query it with an embedded prompt
+    # most_similar_chunks = find_most_similar(prompt_embedding, embeddings)[:5] #if embeddings were pulled from a file
+
+>>>>>>> 413a0ab (updated)
     #TODO put in error handling if the model fails
     while True:
         
@@ -188,10 +202,14 @@ def QueryLLM(vector_collection, model_name, embedding_model_name, user_prompt):
         prompt_chunk_embedding = ollama.embeddings(model=embedding_model_name, prompt=user_prompt)["embedding"]
         # prompt_embedding = ollama.embeddings(model=model_name, prompt=user_prompt)["embedding"]
 <<<<<<< HEAD
+<<<<<<< HEAD
         # print (f"Embedded prompt: {prompt_chunk_embedding}")
 =======
         print (f"Embedded prompt: {prompt_chunk_embedding}")
 >>>>>>> 77ac6fc (removed embeddings)
+=======
+        # print (f"Embedded prompt: {prompt_chunk_embedding}")
+>>>>>>> 413a0ab (updated)
         results = vector_collection.query( 
             query_embeddings=[prompt_chunk_embedding],
             n_results=10
@@ -200,12 +218,17 @@ def QueryLLM(vector_collection, model_name, embedding_model_name, user_prompt):
         )
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         # print(results)
         # langchain implementation not avail on original chromadb
 =======
         print(results)
         #langchain implementation not avail on original chromadb
 >>>>>>> 77ac6fc (removed embeddings)
+=======
+        # print(results)
+        # langchain implementation not avail on original chromadb
+>>>>>>> 413a0ab (updated)
         # results2 = vector_collection.similarity_search(query_embeddings=[prompt_chunk_embedding], n_results=10, include=["documents", "metadatas"])
         # print(results2)
 
@@ -269,11 +292,14 @@ folder_paths = set()
 folder_paths.add('E:\Blog\RandomThoughts\Articles')
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #TODO add flag to run query vs process
 # QueryLLM(vectorDbCollection, query_Model, embedding_model_name)
 
 >>>>>>> 77ac6fc (removed embeddings)
+=======
+>>>>>>> 413a0ab (updated)
 allFiles = list_files(folder_paths)
 
 #TODO need to add a filter date and only acquire files modified from that date
@@ -286,8 +312,13 @@ pdfFiles = FilterFiles(allFiles, ['.pdf'] )
 pptxFiles = FilterFiles(allFiles, ['.ppt', '.pptx'])
 txtFiles = FilterFiles(allFiles, ['.txt', '.md', '.json', '.html'])
 
+chunkSize=1500 
+chunkOverlap=100 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 413a0ab (updated)
 System_prompt = """you are an expert principal researcher for fortune 1000 businesses.You are always able to find and assemble useful, truthful and timely knowledge. Your audience is senior business and technology leadership at large organizations
 Use an informative and persuasive tone throughout, drawing clear comparisons to simplify complex concepts. Start with a compelling headline that indicates the value of the article. Follow with an engaging introduction that outlines a relevant problem or challenge. Include why the topic is pertinent to senior leaders, using industry-specific examples. Provide clear, actionable solutions to the problem, backed by relevant data, case studies, or success stories. Incorporate insights from industry experts and use visuals like infographics, charts, or graphs to support your points. Conclude by summarizing the key points, reinforcing the value of the solutions provided, and providing a clear call-to-action. Ensure the content is concise, direct, and valuable, and easily shareable on social media platforms. Create an overall mood of empowerment and assurance, positioning the discussed solution as a viable and beneficial option for businesses. Generate your response by following the steps below:
 1. Recursively break-down the post into smaller questions/directives
@@ -300,6 +331,7 @@ Use an informative and persuasive tone throughout, drawing clear comparisons to 
 
 Context: 
 """
+<<<<<<< HEAD
 #TODO add flag to run query vs process
 
 #TODO move this to a query class along with dependencies
@@ -310,6 +342,13 @@ QueryLLM(vectorDbCollection, query_Model, embedding_model_name, user_prompt)
 =======
 Process_Text_Documents(txtFiles, vectorDbCollection, embedding_model_name)
 >>>>>>> 77ac6fc (removed embeddings)
+=======
+
+#TODO add flag to run query vs process
+QueryLLM(vectorDbCollection, query_Model, embedding_model_name)
+
+# Process_Text_Documents(txtFiles, vectorDbCollection, embedding_model_name)
+>>>>>>> 413a0ab (updated)
 print('-------------------------------------------')
 # ProcessDocument(docxFiles)
 # print('-------------------------------------------')
