@@ -187,7 +187,11 @@ def QueryLLM(vector_collection, model_name, embedding_model_name, user_prompt):
         
         prompt_chunk_embedding = ollama.embeddings(model=embedding_model_name, prompt=user_prompt)["embedding"]
         # prompt_embedding = ollama.embeddings(model=model_name, prompt=user_prompt)["embedding"]
+<<<<<<< HEAD
         # print (f"Embedded prompt: {prompt_chunk_embedding}")
+=======
+        print (f"Embedded prompt: {prompt_chunk_embedding}")
+>>>>>>> 77ac6fc (removed embeddings)
         results = vector_collection.query( 
             query_embeddings=[prompt_chunk_embedding],
             n_results=10
@@ -195,8 +199,13 @@ def QueryLLM(vector_collection, model_name, embedding_model_name, user_prompt):
             #,where_document={"$contains":user_prompt}  # optional filter
         )
 
+<<<<<<< HEAD
         # print(results)
         # langchain implementation not avail on original chromadb
+=======
+        print(results)
+        #langchain implementation not avail on original chromadb
+>>>>>>> 77ac6fc (removed embeddings)
         # results2 = vector_collection.similarity_search(query_embeddings=[prompt_chunk_embedding], n_results=10, include=["documents", "metadatas"])
         # print(results2)
 
@@ -259,6 +268,12 @@ vectorDB_ChunkOverlap=100
 folder_paths = set()
 folder_paths.add('E:\Blog\RandomThoughts\Articles')
 
+<<<<<<< HEAD
+=======
+#TODO add flag to run query vs process
+# QueryLLM(vectorDbCollection, query_Model, embedding_model_name)
+
+>>>>>>> 77ac6fc (removed embeddings)
 allFiles = list_files(folder_paths)
 
 #TODO need to add a filter date and only acquire files modified from that date
@@ -272,6 +287,7 @@ pptxFiles = FilterFiles(allFiles, ['.ppt', '.pptx'])
 txtFiles = FilterFiles(allFiles, ['.txt', '.md', '.json', '.html'])
 
 
+<<<<<<< HEAD
 System_prompt = """you are an expert principal researcher for fortune 1000 businesses.You are always able to find and assemble useful, truthful and timely knowledge. Your audience is senior business and technology leadership at large organizations
 Use an informative and persuasive tone throughout, drawing clear comparisons to simplify complex concepts. Start with a compelling headline that indicates the value of the article. Follow with an engaging introduction that outlines a relevant problem or challenge. Include why the topic is pertinent to senior leaders, using industry-specific examples. Provide clear, actionable solutions to the problem, backed by relevant data, case studies, or success stories. Incorporate insights from industry experts and use visuals like infographics, charts, or graphs to support your points. Conclude by summarizing the key points, reinforcing the value of the solutions provided, and providing a clear call-to-action. Ensure the content is concise, direct, and valuable, and easily shareable on social media platforms. Create an overall mood of empowerment and assurance, positioning the discussed solution as a viable and beneficial option for businesses. Generate your response by following the steps below:
 1. Recursively break-down the post into smaller questions/directives
@@ -291,6 +307,9 @@ user_prompt = input("what do you want to know? -> ")
 QueryLLM(vectorDbCollection, query_Model, embedding_model_name, user_prompt)
 
 # Process_Text_Documents(txtFiles, vectorDbCollection, embedding_model_name)
+=======
+Process_Text_Documents(txtFiles, vectorDbCollection, embedding_model_name)
+>>>>>>> 77ac6fc (removed embeddings)
 print('-------------------------------------------')
 # ProcessDocument(docxFiles)
 # print('-------------------------------------------')
