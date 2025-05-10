@@ -8,9 +8,13 @@ __pycache__/
 
 db/
 <<<<<<< HEAD
+<<<<<<< HEAD
 embeddings/
 =======
 >>>>>>> 4910f44 (adding  db folder to ignore)
+=======
+embeddings/
+>>>>>>> 77ac6fc (removed embeddings)
 
 # Distribution / packaging
 .Python
