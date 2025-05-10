@@ -53,7 +53,11 @@ def list_files(folder_paths):
 
 # Problem is the chunk to embedding mapping, vector db wants clear text, embedding, and id
 def Process_Text_Documents(file_array, vector_collection, embedding_model_name):
-    
+    # create dir if it doesn't exist this needs to be app level not at save
+    if not os.path.exists("embeddings"):
+        os.makedirs("embeddings")
+
+#TODO Make this multi threaded/pooled
     for file in file_array:
         print('Processing document:', file)
         
@@ -61,25 +65,21 @@ def Process_Text_Documents(file_array, vector_collection, embedding_model_name):
         
         documentPartsArray = get_embeddings_for_TextFiles(file, embedding_model_name)
 
-        save_embeddings(file, documentPartsArray)
+        save_embeddings_to_file(file, documentPartsArray)
         
-        print('Adding chunks to vector database:', len(documentPartsArray))
+        # print('Adding chunks to vector database:', len(documentPartsArray))
         for embed in documentPartsArray:
-            print(".", end="", flush=True)
+            print(".", end="", flush=True) #Visual queue that its doing something for cli.
             vector_collection.add([embed.filename],[embed.embeddings], documents=[embed.text_chunks], metadatas={"source": file})
 
         # Calculate the end time and time taken
         end_time = time.perf_counter()
         print(f"Elapsed time: {end_time - start_time} seconds")
-    
         print("There are", vector_collection.count(), "in the collection")
 
 
-def save_embeddings(filename, DocumentChunks):
-    # create dir if it doesn't exist
-    if not os.path.exists("embeddings"):
-        os.makedirs("embeddings")
-
+def save_embeddings_to_file(filename, DocumentChunks):
+    
     # dump embeddings to json
     if(len(DocumentChunks) == 0):
         print('No embeddings to save')
@@ -129,8 +129,8 @@ def get_embeddings_for_TextFiles(filename, modelname):
     else:
         document_data = get_file_contents(filename)
         print('splitting document:', filename)
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunkSize, 
-            chunk_overlap=chunkOverlap, 
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=vectorDB_ChunkSize, 
+            chunk_overlap=vectorDB_ChunkOverlap, 
             length_function=len,  
             separators=["\n\n", "\n", " ", ".", ",", "",
                         "\u200b",  # Zero-width space
@@ -174,15 +174,10 @@ def find_most_similar(needle, haystack):
     ]
     return sorted(zip(similarity_scores, range(len(haystack))), reverse=True)
 
-def QueryLLM(vector_collection, model_name, embedding_model_name):
-    # vector_collection, userPrompt
-        # prompt_embedding = ollama.embeddings(model=model_name, prompt=user_prompt)["embedding"]
-    # gotta figure out how to get the embeddings from the vector collection - query it with an embedded prompt
-    # most_similar_chunks = find_most_similar(prompt_embedding, embeddings)[:5] #if embeddings were pulled from a file
-
+def QueryLLM(vector_collection, model_name, embedding_model_name, user_prompt):
     #TODO put in error handling if the model fails
     while True:
-        user_prompt = input("what do you want to know? -> ")
+        
         if len(user_prompt) == 0:
             print("Please enter a question. Ctrl+C to Quit.\n")
             continue
@@ -247,7 +242,7 @@ def QueryLLM(vector_collection, model_name, embedding_model_name):
 
 
 
-
+#Clear console window
 os.system('cls' if os.name == 'nt' else 'clear')
 
 embedding_model_name='nomic-embed-text'
@@ -258,11 +253,14 @@ query_Model = 'dolphin-llama3' #'llama3' # 'dolphin-llama3' 'llava-phi3' 'llama3
 # llama3 93sec
 
 vectorDbCollection = ChromaDBConfig(embedding_model_name)
+vectorDB_ChunkSize=1500 
+vectorDB_ChunkOverlap=100 
+
 folder_paths = set()
-#folder_paths.add('E:/Blog/RandomThoughts')
 folder_paths.add('E:\Blog\RandomThoughts\Articles')
 
 allFiles = list_files(folder_paths)
+
 #TODO need to add a filter date and only acquire files modified from that date
 csvFiles = FilterFiles(allFiles, ['.csv'] )
 docxFiles = FilterFiles(allFiles, ['.docx', '.doc'] )
@@ -273,8 +271,6 @@ pdfFiles = FilterFiles(allFiles, ['.pdf'] )
 pptxFiles = FilterFiles(allFiles, ['.ppt', '.pptx'])
 txtFiles = FilterFiles(allFiles, ['.txt', '.md', '.json', '.html'])
 
-chunkSize=1500 
-chunkOverlap=100 
 
 System_prompt = """you are an expert principal researcher for fortune 1000 businesses.You are always able to find and assemble useful, truthful and timely knowledge. Your audience is senior business and technology leadership at large organizations
 Use an informative and persuasive tone throughout, drawing clear comparisons to simplify complex concepts. Start with a compelling headline that indicates the value of the article. Follow with an engaging introduction that outlines a relevant problem or challenge. Include why the topic is pertinent to senior leaders, using industry-specific examples. Provide clear, actionable solutions to the problem, backed by relevant data, case studies, or success stories. Incorporate insights from industry experts and use visuals like infographics, charts, or graphs to support your points. Conclude by summarizing the key points, reinforcing the value of the solutions provided, and providing a clear call-to-action. Ensure the content is concise, direct, and valuable, and easily shareable on social media platforms. Create an overall mood of empowerment and assurance, positioning the discussed solution as a viable and beneficial option for businesses. Generate your response by following the steps below:
@@ -288,9 +284,11 @@ Use an informative and persuasive tone throughout, drawing clear comparisons to 
 
 Context: 
 """
-
 #TODO add flag to run query vs process
-QueryLLM(vectorDbCollection, query_Model, embedding_model_name)
+
+#TODO move this to a query class along with dependencies
+user_prompt = input("what do you want to know? -> ")
+QueryLLM(vectorDbCollection, query_Model, embedding_model_name, user_prompt)
 
 # Process_Text_Documents(txtFiles, vectorDbCollection, embedding_model_name)
 print('-------------------------------------------')
