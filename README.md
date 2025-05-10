@@ -1,5 +1,6 @@
 # DocumentEmbeder
 
+<<<<<<< HEAD
 I want to take a folder of files create the embeddings for them and then use them during RAG prompts.
 
 Requirements
@@ -70,3 +71,8 @@ pip install -r requirements.txt
 ps to stream a file
 Get-Content "$($env:USERPROFILE)\AppData\Local\Ollama\server.log" -wait
 ```
+=======
+# Generate requirements.txt
+pip freeze > requirements.txt
+pip install -r requirements.txt
+>>>>>>> bab5678 (ollama is working, embedding of files is working, query ollama + document data is working but is sucking in the results)
