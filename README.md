@@ -1,10 +1,6 @@
 # DocumentEmbeder
 
-<<<<<<< HEAD
-
-# Generate venv
-=======
-<<<<<<< HEAD
+## Generate venv
 I want to take a folder of files create the embeddings for them and then use them during RAG prompts.
 
 Requirements
@@ -51,14 +47,11 @@ uv run .\DocumentRetrieve.py
 ```python
 python.exe -m pip install --upgrade pip
 
->>>>>>> 7af3d31aab26a992d295f33688bb30646d0def30
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install --upgrade langchain
 pip install --upgrade langchain
 
-<<<<<<< HEAD
-=======
 #add -O to turn debug off
 #ctlr k, ctrl c to comment
 ```
@@ -66,19 +59,15 @@ pip install --upgrade langchain
 ### Setup for deployment
 
 ```python
->>>>>>> 7af3d31aab26a992d295f33688bb30646d0def30
 # Generate requirements.txt
 pip freeze > requirements.txt
 pip install -r requirements.txt
-
-<<<<<<< HEAD
 
 #add -O to turn debug off
 #ctlr k, ctrl c to comment
 
 ps to stream a file
 Get-Content "$($env:USERPROFILE)\AppData\Local\Ollama\server.log" -wait
-=======
 ```
 
 
@@ -87,9 +76,7 @@ Get-Content "$($env:USERPROFILE)\AppData\Local\Ollama\server.log" -wait
 ps to stream a file
 Get-Content "$($env:USERPROFILE)\AppData\Local\Ollama\server.log" -wait
 ```
-=======
-# Generate requirements.txt
+
+### Generate requirements.txt
 pip freeze > requirements.txt
 pip install -r requirements.txt
->>>>>>> bab5678 (ollama is working, embedding of files is working, query ollama + document data is working but is sucking in the results)
->>>>>>> 7af3d31aab26a992d295f33688bb30646d0def30
